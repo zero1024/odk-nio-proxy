@@ -20,7 +20,7 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
-        try (Selector selector = Selector.open()) {
+        try (Selector selector = SelectorFactory.createSelector()) {
             this.selector = selector;
             cycleWork();
         } catch (IOException e) {
@@ -36,7 +36,7 @@ public class Worker implements Runnable {
                 task.assignTaskToWorker(this);
             }
 
-            selector.select(100L);
+            selector.select();
 
             final Set<SelectionKey> keys = selector.selectedKeys();
             for (final SelectionKey key : keys) {

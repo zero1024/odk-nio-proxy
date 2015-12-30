@@ -1,5 +1,6 @@
 package odk;
 
+import java.nio.channels.Selector;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -14,6 +15,7 @@ public class IOTaskRegister {
 
     public static void addTask(IOTask task) {
         IO_TASKS.add(task);
+        SelectorFactory.list.forEach(Selector::wakeup);
     }
 
     public static IOTask pollTask() {
