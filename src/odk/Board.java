@@ -1,7 +1,6 @@
 package odk;
 
 import odk.accept.AcceptIOTask;
-import odk.api.CloseIOTask;
 import odk.api.IOTask;
 
 import java.util.List;
@@ -31,9 +30,7 @@ public class Board {
         return TASKS;
     }
 
-    /**
-     * Открытие и регистрация селектора
-     */
+
     public static void registerWorker(Worker worker) {
         WORKERS.add(worker);
     }
