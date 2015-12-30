@@ -1,11 +1,12 @@
 package odk.accept;
 
-import odk.api.IOEventHandler;
 import odk.Board;
+import odk.api.IOEventHandler;
 import odk.config.ProxyConfig;
 import odk.transfer.TransferIOTask;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
@@ -30,7 +31,11 @@ public class AcceptIOEventHandler implements IOEventHandler {
                 ServerSocketChannel server = (ServerSocketChannel) key.channel();
                 SocketChannel localChannel = server.accept();
                 localChannel.configureBlocking(false);
-                Board.addTask(new TransferIOTask(config, localChannel));
+
+                SocketChannel remoteChannel = SocketChannel.open();
+                remoteChannel.configureBlocking(false);
+                remoteChannel.connect(new InetSocketAddress(config.getRemoteHost(), config.getRemotePort()));
+                Board.addTask(new TransferIOTask(localChannel, remoteChannel));
             } catch (IOException e) {
                 e.printStackTrace();
             }

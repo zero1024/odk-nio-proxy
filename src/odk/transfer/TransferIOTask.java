@@ -1,11 +1,9 @@
 package odk.transfer;
 
-import odk.api.IOTask;
-import odk.config.ProxyConfig;
 import odk.Worker;
+import odk.api.IOTask;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -17,22 +15,19 @@ import java.nio.channels.SocketChannel;
  */
 public class TransferIOTask implements IOTask {
 
-    private ProxyConfig config;
     private SocketChannel localChannel;
+    private SocketChannel remoteChannel;
 
-    public TransferIOTask(ProxyConfig config, SocketChannel localChannel) {
-        this.config = config;
+    public TransferIOTask(SocketChannel localChannel, SocketChannel remoteChannel) {
         this.localChannel = localChannel;
+        this.remoteChannel = remoteChannel;
     }
 
     @Override
     public void register(Worker worker) {
         try {
-            Selector selector = worker.getSelector();
-            SocketChannel remoteChannel = SocketChannel.open();
-            remoteChannel.configureBlocking(false);
-            remoteChannel.connect(new InetSocketAddress(config.getRemoteHost(), config.getRemotePort()));
 
+            Selector selector = worker.getSelector();
             TransferIOEventHandler handler = new TransferIOEventHandler(localChannel, remoteChannel, selector);
             handler.registerRemoteEvent(SelectionKey.OP_CONNECT);
             handler.registerLocalEvent(SelectionKey.OP_READ);
