@@ -22,7 +22,7 @@ public class Board {
         return TASKS;
     }
 
-    public static void assignTaskToSomebody(IOTask task) {
+    public static void addTask(IOTask task) {
         TASKS.add(task);
         WORKERS.forEach(Worker::wakeup);
     }

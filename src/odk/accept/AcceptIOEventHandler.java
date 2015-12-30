@@ -30,7 +30,7 @@ public class AcceptIOEventHandler implements IOEventHandler {
                 ServerSocketChannel server = (ServerSocketChannel) key.channel();
                 SocketChannel localChannel = server.accept();
                 localChannel.configureBlocking(false);
-                Board.assignTaskToSomebody(new TransferIOTask(config, localChannel));
+                Board.addTask(new TransferIOTask(config, localChannel));
             } catch (IOException e) {
                 e.printStackTrace();
             }

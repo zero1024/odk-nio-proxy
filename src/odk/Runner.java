@@ -21,7 +21,7 @@ public class Runner {
             new Thread(new Worker()).start();
         }
 
-        Board.assignTaskToSomebody(new AcceptIOTask(config));
+        Board.addTask(new AcceptIOTask(config));
     }
 
 }

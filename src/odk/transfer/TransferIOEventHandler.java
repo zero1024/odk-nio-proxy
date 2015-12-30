@@ -84,8 +84,8 @@ public class TransferIOEventHandler implements IOEventHandler {
             if (remoteServerIsConnected)
                 remote.interestOps(SelectionKey.OP_WRITE);
         } else if (read == -1) {
-            local.interestOps(0);
-            remote.interestOps(SelectionKey.OP_READ);
+            remoteChannel.close();
+            localChannel.close();
         }
     }
 
@@ -97,8 +97,6 @@ public class TransferIOEventHandler implements IOEventHandler {
             remote.interestOps(0);
             local.interestOps(SelectionKey.OP_WRITE);
         } else if (read == -1) {
-//            local.cancel();
-//            remote.cancel();
             remoteChannel.close();
             localChannel.close();
         }
