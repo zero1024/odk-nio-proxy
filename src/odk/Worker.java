@@ -3,6 +3,7 @@ package odk;
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
+import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +17,13 @@ public class Worker implements Runnable {
 
     private static final Logger logger = Logger.getLogger(Worker.class.getName());
 
-    protected Selector selector;
+    private Selector selector;
+    private Queue<IOTask> tasks;
+
+
+    public void wakeup() {
+        this.selector.wakeup();
+    }
 
     public Selector getSelector() {
         return selector;
@@ -28,8 +35,9 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
-        try (Selector selector = SelectorFactory.openSelector()) {
+        try (Selector selector = Selector.open()) {
             this.selector = selector;
+            this.tasks = Board.registerWorker(this);
             cycleWork();
         } catch (IOException e) {
             if (logger.isLoggable(Level.SEVERE)) {
@@ -49,9 +57,9 @@ public class Worker implements Runnable {
     private void cycleWork() throws IOException {
         while (!Thread.interrupted()) {
 
-            IOTask task = IOTaskRegister.pollTask();
+            IOTask task = tasks.poll();
             if (task != null) {
-                assignTask(task);
+                task.assignTask(this);
             }
 
             selector.select();
@@ -65,7 +73,4 @@ public class Worker implements Runnable {
         }
     }
 
-    private void assignTask(IOTask task) {
-        task.assignTask(this);
-    }
 }

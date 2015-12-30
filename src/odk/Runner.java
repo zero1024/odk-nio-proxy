@@ -14,14 +14,14 @@ public class Runner {
 
         ProxyConfig config = new ProxyConfig(8000, 80, "www.odnoklassniki.ru");
 
-        int processors = Runtime.getRuntime().availableProcessors()/2;
+        int processors = Runtime.getRuntime().availableProcessors();
 
-        IOTaskRegister.registerTask(new AcceptIOTask(config));
 
         for (int i = 0; i < processors; i++) {
             new Thread(new Worker()).start();
         }
 
+        Board.assignTaskToSomebody(new AcceptIOTask(config));
     }
 
 }
