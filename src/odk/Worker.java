@@ -1,12 +1,16 @@
 package odk;
 
+import odk.api.IOEventHandler;
+import odk.api.IOTask;
+
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.lang.Thread.currentThread;
 
 /**
  * User: operehod
@@ -18,11 +22,11 @@ public class Worker implements Runnable {
     private static final Logger logger = Logger.getLogger(Worker.class.getName());
 
     private Selector selector;
-    private Queue<IOTask> tasks;
 
 
     public void wakeup() {
-        this.selector.wakeup();
+        if (this.selector != null)
+            this.selector.wakeup();
     }
 
     public Selector getSelector() {
@@ -37,7 +41,7 @@ public class Worker implements Runnable {
     public void run() {
         try (Selector selector = Selector.open()) {
             this.selector = selector;
-            this.tasks = Board.registerWorker(this);
+            Board.registerWorker(this);
             cycleWork();
         } catch (IOException e) {
             if (logger.isLoggable(Level.SEVERE)) {
@@ -55,14 +59,15 @@ public class Worker implements Runnable {
      * 4. получив новую задачу он зарегистрирует её и будет ожидать io-событий связанных с этой задачей.
      */
     private void cycleWork() throws IOException {
-        while (!Thread.interrupted()) {
+        while (!currentThread().isInterrupted()) {
 
-            IOTask task = tasks.poll();
+            IOTask task = Board.tasks().poll();
             if (task != null) {
-                task.assignTask(this);
+                task.register(this);
             }
 
-            selector.select();
+            if (!currentThread().isInterrupted())
+                selector.select();
 
             final Set<SelectionKey> keys = selector.selectedKeys();
             for (final SelectionKey key : keys) {

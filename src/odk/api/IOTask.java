@@ -1,4 +1,6 @@
-package odk;
+package odk.api;
+
+import odk.Worker;
 
 /**
  * User: operehod
@@ -11,11 +13,11 @@ package odk;
 public interface IOTask {
 
     /**
-     * Когда worker достает задачу из регистра, он вызывает этот метод, чтобы
+     * Когда worker достает задачу из board, он вызывает этот метод, чтобы
      * привязать себя к этой задаче. Метод вызывает один раз.
      *
      * @param worker - поток, который будет выполнять данную задачу
      */
-    public void assignTask(Worker worker);
+    public void register(Worker worker);
 
 }

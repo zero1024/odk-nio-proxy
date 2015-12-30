@@ -1,7 +1,8 @@
 package odk.accept;
 
-import odk.IOEventHandler;
-import odk.IOTask;
+import odk.Board;
+import odk.api.IOEventHandler;
+import odk.api.IOTask;
 import odk.config.ProxyConfig;
 import odk.Worker;
 
@@ -34,7 +35,7 @@ public class AcceptIOTask implements IOTask {
     }
 
     @Override
-    public void assignTask(Worker worker) {
+    public void register(Worker worker) {
         try {
             ServerSocketChannel server = ServerSocketChannel.open();
             server.socket().bind(new InetSocketAddress(config.getLocalPort()));
@@ -44,6 +45,7 @@ public class AcceptIOTask implements IOTask {
             if (logger.isLoggable(Level.SEVERE)) {
                 logger.log(Level.SEVERE, "Cannot init server socket. Port [" + config.getLocalPort() + "]", e);
             }
+            Board.reportAcceptTaskFail();
         }
     }
 }

@@ -3,6 +3,8 @@ package odk;
 import odk.accept.AcceptIOTask;
 import odk.config.ProxyConfig;
 
+import java.util.Collections;
+
 /**
  * User: operehod
  * Date: 28.12.2015
@@ -17,11 +19,12 @@ public class Runner {
         int processors = Runtime.getRuntime().availableProcessors();
 
 
+        Board.init(Collections.singletonList(new AcceptIOTask(config)));
+
         for (int i = 0; i < processors; i++) {
             new Thread(new Worker()).start();
         }
 
-        Board.addTask(new AcceptIOTask(config));
     }
 
 }

@@ -1,6 +1,6 @@
 package odk.transfer;
 
-import odk.IOEventHandler;
+import odk.api.IOEventHandler;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

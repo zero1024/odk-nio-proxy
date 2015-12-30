@@ -1,6 +1,6 @@
 package odk.accept;
 
-import odk.IOEventHandler;
+import odk.api.IOEventHandler;
 import odk.Board;
 import odk.config.ProxyConfig;
 import odk.transfer.TransferIOTask;
