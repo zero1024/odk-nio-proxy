@@ -2,7 +2,7 @@ package odk.accept;
 
 import odk.IOEventHandler;
 import odk.IOTaskRegister;
-import odk.ProxyConfig;
+import odk.config.ProxyConfig;
 import odk.transfer.TransferIOTask;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class AcceptIOEventHandler implements IOEventHandler {
                 ServerSocketChannel server = (ServerSocketChannel) key.channel();
                 SocketChannel localChannel = server.accept();
                 localChannel.configureBlocking(false);
-                IOTaskRegister.addTask(new TransferIOTask(config, localChannel));
+                IOTaskRegister.registerTask(new TransferIOTask(config, localChannel));
             } catch (IOException e) {
                 e.printStackTrace();
             }

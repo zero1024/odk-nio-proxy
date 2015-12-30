@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: operehod
@@ -12,28 +14,44 @@ import java.util.Set;
  */
 public class Worker implements Runnable {
 
-    private Selector selector;
+    private static final Logger logger = Logger.getLogger(Worker.class.getName());
+
+    protected Selector selector;
 
     public Selector getSelector() {
         return selector;
     }
 
+
+    public Worker() {
+    }
+
     @Override
     public void run() {
-        try (Selector selector = SelectorFactory.createSelector()) {
+        try (Selector selector = SelectorFactory.openSelector()) {
             this.selector = selector;
             cycleWork();
         } catch (IOException e) {
-            e.printStackTrace();
+            if (logger.isLoggable(Level.SEVERE)) {
+                logger.log(Level.SEVERE, "Some problem with selector. Thread is stopped", e);
+            }
         }
 
     }
 
+    /**
+     * Схема работы:
+     * 1. поток ожидает io-событий в блокирующем режиме
+     * 2. при появлении события, происходит стандартная обработка с использованием handler/attachment
+     * 3. если в регистр задач будет добавлена новая задача, то все селекторы будут разбужены, и worker выйдет из блокировки и возможно получит эту задачу из регистра
+     * 4. получив новую задачу он зарегистрирует её и будем ожидать io-событий связанных с этой задачей.
+     */
     private void cycleWork() throws IOException {
         while (!Thread.interrupted()) {
+
             IOTask task = IOTaskRegister.pollTask();
             if (task != null) {
-                task.assignTaskToWorker(this);
+                assignTask(task);
             }
 
             selector.select();
@@ -45,5 +63,9 @@ public class Worker implements Runnable {
             }
             keys.clear();
         }
+    }
+
+    private void assignTask(IOTask task) {
+        task.assignTask(this);
     }
 }

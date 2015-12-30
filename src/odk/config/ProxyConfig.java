@@ -1,4 +1,4 @@
-package odk;
+package odk.config;
 
 /**
  * User: operehod

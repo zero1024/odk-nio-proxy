@@ -13,18 +13,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SelectorFactory {
 
 
-    public static List<Selector> list = new CopyOnWriteArrayList<>();
+    private static final List<Selector> REGISTER = new CopyOnWriteArrayList<>();
 
-    public static Selector createSelector() {
-        try {
-            Selector res = Selector.open();
-            list.add(res);
-            return res;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    /**
+     * Открытие и регистрация селектора
+     */
+    public static Selector openSelector() throws IOException {
+        Selector res = Selector.open();
+        REGISTER.add(res);
+        return res;
     }
 
-
+    public static List<Selector> getRegisteredSelectors() {
+        return REGISTER;
+    }
 }

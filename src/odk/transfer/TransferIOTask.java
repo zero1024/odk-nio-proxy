@@ -1,7 +1,7 @@
 package odk.transfer;
 
 import odk.IOTask;
-import odk.ProxyConfig;
+import odk.config.ProxyConfig;
 import odk.Worker;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class TransferIOTask implements IOTask {
     }
 
     @Override
-    public void assignTaskToWorker(Worker worker) {
+    public void assignTask(Worker worker) {
         try {
             Selector selector = worker.getSelector();
             SocketChannel remoteChannel = SocketChannel.open();

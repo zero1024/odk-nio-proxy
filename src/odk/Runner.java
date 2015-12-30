@@ -1,6 +1,7 @@
 package odk;
 
 import odk.accept.AcceptIOTask;
+import odk.config.ProxyConfig;
 
 /**
  * User: operehod
@@ -15,7 +16,7 @@ public class Runner {
 
         int processors = Runtime.getRuntime().availableProcessors()/2;
 
-        IOTaskRegister.addTask(new AcceptIOTask(config));
+        IOTaskRegister.registerTask(new AcceptIOTask(config));
 
         for (int i = 0; i < processors; i++) {
             new Thread(new Worker()).start();
