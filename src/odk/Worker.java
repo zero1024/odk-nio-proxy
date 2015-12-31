@@ -24,11 +24,6 @@ public class Worker implements Runnable {
     private Selector selector;
 
 
-    public void wakeup() {
-        if (this.selector != null)
-            this.selector.wakeup();
-    }
-
     public Selector getSelector() {
         return selector;
     }
@@ -66,16 +61,14 @@ public class Worker implements Runnable {
                 task.register(this);
             }
 
-            if (!currentThread().isInterrupted()) {
-                selector.select();
+            selector.select(100L);
 
-                final Set<SelectionKey> keys = selector.selectedKeys();
-                for (final SelectionKey key : keys) {
-                    IOEventHandler handler = (IOEventHandler) key.attachment();
-                    handler.handle(key);
-                }
-                keys.clear();
+            final Set<SelectionKey> keys = selector.selectedKeys();
+            for (final SelectionKey key : keys) {
+                IOEventHandler handler = (IOEventHandler) key.attachment();
+                handler.handle(key);
             }
+            keys.clear();
         }
     }
 
