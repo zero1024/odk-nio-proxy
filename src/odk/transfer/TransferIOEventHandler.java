@@ -21,8 +21,7 @@ public class TransferIOEventHandler implements IOEventHandler {
     private SocketChannel remoteChannel;
     private Selector selector;
 
-    private BufferWrapper localToRemoteBuffer = new BufferWrapper();
-    private BufferWrapper remoteToLocalBuffer = new BufferWrapper();
+    private BufferWrapper buffer = new BufferWrapper();
 
     SelectionKey local;
     SelectionKey remote;
@@ -70,16 +69,16 @@ public class TransferIOEventHandler implements IOEventHandler {
     private void connectToRemote(SelectionKey key) throws IOException {
         remoteServerIsConnected = true;
         remoteChannel.finishConnect();
-        if (localToRemoteBuffer.isFull())
+        if (buffer.isFull())
             remote.interestOps(SelectionKey.OP_WRITE);
     }
 
 
     private void readFromLocal(SelectionKey key) throws IOException {
-        int read = localChannel.read(localToRemoteBuffer.get());
+        int read = localChannel.read(buffer.get());
 
         if (read > 0) {
-            localToRemoteBuffer.seal();
+            buffer.seal();
             local.interestOps(0);
             if (remoteServerIsConnected)
                 remote.interestOps(SelectionKey.OP_WRITE);
@@ -90,10 +89,10 @@ public class TransferIOEventHandler implements IOEventHandler {
     }
 
     private void readFromRemote(SelectionKey key) throws IOException {
-        int read = remoteChannel.read(remoteToLocalBuffer.get());
+        int read = remoteChannel.read(buffer.get());
 
         if (read > 0) {
-            remoteToLocalBuffer.seal();
+            buffer.seal();
             remote.interestOps(0);
             local.interestOps(SelectionKey.OP_WRITE);
         } else if (read == -1) {
@@ -104,20 +103,20 @@ public class TransferIOEventHandler implements IOEventHandler {
 
 
     private void writeToLocal(SelectionKey key) throws IOException {
-        int read = localChannel.write(remoteToLocalBuffer.get());
+        int read = localChannel.write(buffer.get());
 
-        if (remoteToLocalBuffer.get().remaining() == 0) {
-            remoteToLocalBuffer.clear();
+        if (buffer.get().remaining() == 0) {
+            buffer.clear();
             local.interestOps(SelectionKey.OP_READ);
             remote.interestOps(SelectionKey.OP_READ);
         }
     }
 
     private void writeToRemote(SelectionKey key) throws IOException {
-        remoteChannel.write(localToRemoteBuffer.get());
+        remoteChannel.write(buffer.get());
 
-        if (localToRemoteBuffer.get().remaining() == 0) {
-            localToRemoteBuffer.clear();
+        if (buffer.get().remaining() == 0) {
+            buffer.clear();
             remote.interestOps(SelectionKey.OP_READ);
             local.interestOps(SelectionKey.OP_READ);
         }

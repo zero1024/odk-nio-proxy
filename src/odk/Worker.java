@@ -66,15 +66,16 @@ public class Worker implements Runnable {
                 task.register(this);
             }
 
-            if (!currentThread().isInterrupted())
+            if (!currentThread().isInterrupted()) {
                 selector.select();
 
-            final Set<SelectionKey> keys = selector.selectedKeys();
-            for (final SelectionKey key : keys) {
-                IOEventHandler handler = (IOEventHandler) key.attachment();
-                handler.handle(key);
+                final Set<SelectionKey> keys = selector.selectedKeys();
+                for (final SelectionKey key : keys) {
+                    IOEventHandler handler = (IOEventHandler) key.attachment();
+                    handler.handle(key);
+                }
+                keys.clear();
             }
-            keys.clear();
         }
     }
 
