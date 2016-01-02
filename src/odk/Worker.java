@@ -1,7 +1,7 @@
 package odk;
 
-import odk.api.IOEventHandler;
-import odk.api.IOTask;
+import odk.event.EventHandler;
+import odk.task.Task;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -36,7 +36,6 @@ public class Worker implements Runnable {
     public void run() {
         try (Selector selector = Selector.open()) {
             this.selector = selector;
-            Board.registerWorker(this);
             cycleWork();
         } catch (IOException e) {
             if (logger.isLoggable(Level.SEVERE)) {
@@ -56,7 +55,7 @@ public class Worker implements Runnable {
     private void cycleWork() throws IOException {
         while (!currentThread().isInterrupted()) {
 
-            IOTask task = Board.tasks().poll();
+            Task task = WorkBoard.tasks().poll();
             if (task != null) {
                 task.register(this);
             }
@@ -65,7 +64,7 @@ public class Worker implements Runnable {
 
             final Set<SelectionKey> keys = selector.selectedKeys();
             for (final SelectionKey key : keys) {
-                IOEventHandler handler = (IOEventHandler) key.attachment();
+                EventHandler handler = (EventHandler) key.attachment();
                 handler.handle(key);
             }
             keys.clear();

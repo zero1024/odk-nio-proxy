@@ -1,4 +1,4 @@
-package odk.api;
+package odk.event;
 
 import java.nio.channels.SelectionKey;
 
@@ -9,7 +9,7 @@ import java.nio.channels.SelectionKey;
  * <p>
  * Обработчик событий на сокетах
  */
-public interface IOEventHandler {
+public interface EventHandler {
 
     public void handle(SelectionKey key);
 

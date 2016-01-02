@@ -1,4 +1,4 @@
-package odk.api;
+package odk.task;
 
 import odk.Worker;
 
@@ -8,9 +8,8 @@ import odk.Worker;
  * Time: 11:23
  * <p>
  * Некая "задача" которую должен выполнить worker. Как правило, задача состоит из ряда обработок различных событий на одном или нескольких сокетах.
- * Каждоый конкретной обработкой занимается IOEventHandler
  */
-public interface IOTask {
+public interface Task {
 
     /**
      * Когда worker достает задачу из board, он вызывает этот метод, чтобы

@@ -1,6 +1,7 @@
-package odk;
+package odk.task;
 
-import odk.api.IOTask;
+import odk.WorkBoard;
+import odk.Worker;
 
 /**
  * User: operehod
@@ -10,10 +11,10 @@ import odk.api.IOTask;
  * Если не удалось выполнить ни одну AcceptIOTask, то существование прокси-сервера становится бессмысленным.
  * Поэтому создается задача CloseIOTask которая должна передаться всем worker-ам, чтобы они смогли остановить свое выполнение.
  */
-public class CloseIOTask implements IOTask {
+public class CloseTask implements Task {
     @Override
     public void register(Worker worker) {
         Thread.currentThread().interrupt();
-        Board.addTask(this);
+        WorkBoard.addTask(this);
     }
 }

@@ -1,9 +1,8 @@
-package odk.accept;
+package odk.event;
 
-import odk.Board;
-import odk.api.IOEventHandler;
+import odk.WorkBoard;
 import odk.config.ProxyConfig;
-import odk.transfer.TransferIOTask;
+import odk.task.TransferTask;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -16,11 +15,11 @@ import java.nio.channels.SocketChannel;
  * Date: 29.12.2015
  * Time: 11:53
  */
-public class AcceptIOEventHandler implements IOEventHandler {
+public class AcceptEventHandler implements EventHandler {
 
     private ProxyConfig config;
 
-    public AcceptIOEventHandler(ProxyConfig config) {
+    public AcceptEventHandler(ProxyConfig config) {
         this.config = config;
     }
 
@@ -35,7 +34,7 @@ public class AcceptIOEventHandler implements IOEventHandler {
                 SocketChannel remoteChannel = SocketChannel.open();
                 remoteChannel.configureBlocking(false);
                 remoteChannel.connect(new InetSocketAddress(config.getRemoteHost(), config.getRemotePort()));
-                Board.addTask(new TransferIOTask(localChannel, remoteChannel));
+                WorkBoard.addTask(new TransferTask(localChannel, remoteChannel));
             } catch (IOException e) {
                 e.printStackTrace();
             }

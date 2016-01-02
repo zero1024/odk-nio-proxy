@@ -1,6 +1,6 @@
 package odk;
 
-import odk.accept.AcceptIOTask;
+import odk.task.AcceptTask;
 import odk.config.ProxyConfig;
 
 import java.util.Collections;
@@ -19,7 +19,7 @@ public class Runner {
         int processors = Runtime.getRuntime().availableProcessors();
 
 
-        Board.init(Collections.singletonList(new AcceptIOTask(config)));
+        WorkBoard.init(Collections.singletonList(new AcceptTask(config)));
 
         for (int i = 0; i < processors; i++) {
             new Thread(new Worker()).start();

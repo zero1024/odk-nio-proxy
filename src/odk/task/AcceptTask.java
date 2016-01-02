@@ -1,8 +1,8 @@
-package odk.accept;
+package odk.task;
 
-import odk.Board;
-import odk.api.IOEventHandler;
-import odk.api.IOTask;
+import odk.WorkBoard;
+import odk.event.AcceptEventHandler;
+import odk.event.EventHandler;
 import odk.config.ProxyConfig;
 import odk.Worker;
 
@@ -22,16 +22,16 @@ import java.util.logging.Logger;
  * Связанные с этой задачей события - SelectionKey.OP_ACCEPT
  * Обработчик событий - AcceptIOEventHandler
  */
-public class AcceptIOTask implements IOTask {
+public class AcceptTask implements Task {
 
     private static final Logger logger = Logger.getLogger(Worker.class.getName());
 
     private ProxyConfig config;
-    private IOEventHandler handler;
+    private EventHandler handler;
 
-    public AcceptIOTask(ProxyConfig config) {
+    public AcceptTask(ProxyConfig config) {
         this.config = config;
-        this.handler = new AcceptIOEventHandler(config);
+        this.handler = new AcceptEventHandler(config);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class AcceptIOTask implements IOTask {
             if (logger.isLoggable(Level.SEVERE)) {
                 logger.log(Level.SEVERE, "Cannot init server socket. Port [" + config.getLocalPort() + "]", e);
             }
-            Board.reportAcceptTaskFail();
+            WorkBoard.reportAcceptTaskFail();
         }
     }
 }

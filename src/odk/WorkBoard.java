@@ -1,7 +1,8 @@
 package odk;
 
-import odk.accept.AcceptIOTask;
-import odk.api.IOTask;
+import odk.task.AcceptTask;
+import odk.task.CloseTask;
+import odk.task.Task;
 
 import java.util.List;
 import java.util.Queue;
@@ -13,36 +14,30 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Date: 30.12.2015
  * Time: 11:05
  */
-public class Board {
+public class WorkBoard {
 
 
-    private static final Queue<Worker> WORKERS = new LinkedBlockingQueue<>();
-    private static final Queue<IOTask> TASKS = new LinkedBlockingQueue<>();
+    private static final Queue<Task> TASKS = new LinkedBlockingQueue<>();
     private static final AtomicInteger ACCEPT_TASK_COUNT = new AtomicInteger();
 
-    public static void init(List<AcceptIOTask> startTask) {
+    public static void init(List<AcceptTask> startTask) {
         TASKS.addAll(startTask);
         ACCEPT_TASK_COUNT.set(startTask.size());
     }
 
 
-    public static Queue<IOTask> tasks() {
+    public static Queue<Task> tasks() {
         return TASKS;
     }
 
-
-    public static void registerWorker(Worker worker) {
-        WORKERS.add(worker);
-    }
-
-    public static void addTask(IOTask task) {
+    public static void addTask(Task task) {
         TASKS.add(task);
     }
 
 
     public static void reportAcceptTaskFail() {
         if (ACCEPT_TASK_COUNT.decrementAndGet() == 0) {
-            addTask(new CloseIOTask());
+            addTask(new CloseTask());
         }
     }
 
