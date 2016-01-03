@@ -20,11 +20,11 @@ import java.util.logging.Logger;
  * <p>
  * Задача - ожидать запросов на подключение к сокету. Такие задачи регистрируются единожды при старте приложения.
  * Связанные с этой задачей события - SelectionKey.OP_ACCEPT
- * Обработчик событий - AcceptIOEventHandler
+ * Обработчик событий - AcceptEventHandler
  */
 public class AcceptTask implements Task {
 
-    private static final Logger logger = Logger.getLogger(Worker.class.getName());
+    private static final Logger logger = Logger.getLogger(AcceptTask.class.getName());
 
     private ProxyConfig config;
     private EventHandler handler;

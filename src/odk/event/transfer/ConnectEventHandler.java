@@ -1,7 +1,7 @@
 package odk.event.transfer;
 
 import odk.event.EventHandler;
-import odk.util.TransferState;
+import odk.task.TransferTask;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -13,10 +13,10 @@ import java.nio.channels.SelectionKey;
  */
 public class ConnectEventHandler implements EventHandler {
 
-    private TransferState state;
+    private TransferTask.State state;
 
 
-    public ConnectEventHandler(TransferState state) {
+    public ConnectEventHandler(TransferTask.State state) {
         this.state = state;
     }
 

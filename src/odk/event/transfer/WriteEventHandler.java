@@ -1,7 +1,7 @@
 package odk.event.transfer;
 
 import odk.event.EventHandler;
-import odk.util.TransferState;
+import odk.task.TransferTask;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -14,10 +14,10 @@ import java.nio.channels.SocketChannel;
  */
 public class WriteEventHandler implements EventHandler {
 
-    private TransferState state;
+    private TransferTask.State state;
 
 
-    public WriteEventHandler(TransferState state) {
+    public WriteEventHandler(TransferTask.State state) {
         this.state = state;
     }
 

@@ -34,7 +34,7 @@ public class AcceptEventHandler implements EventHandler {
                 SocketChannel remoteChannel = SocketChannel.open();
                 remoteChannel.configureBlocking(false);
                 remoteChannel.connect(new InetSocketAddress(config.getRemoteHost(), config.getRemotePort()));
-                WorkBoard.addTask(new TransferTask(localChannel, remoteChannel));
+                WorkBoard.addTask(new TransferTask(localChannel, remoteChannel, config));
             } catch (IOException e) {
                 e.printStackTrace();
             }
