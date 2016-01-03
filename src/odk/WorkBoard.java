@@ -1,5 +1,6 @@
 package odk;
 
+import odk.event.transfer.WriteEventHandler;
 import odk.task.AcceptTask;
 import odk.task.PoisonPill;
 import odk.task.Task;
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: operehod
@@ -16,6 +19,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class WorkBoard {
 
+
+    private static final Logger logger = Logger.getLogger(WriteEventHandler.class.getName());
 
     private static final Queue<Task> TASKS = new LinkedBlockingQueue<>();
 
@@ -44,6 +49,11 @@ public class WorkBoard {
      */
     public static void reportAcceptTaskFail() {
         if (ACCEPT_TASK_COUNT.decrementAndGet() == 0) {
+
+            if (logger.isLoggable(Level.WARNING)) {
+                logger.log(Level.WARNING, "All accept tasks has failed. Server is stopping...");
+            }
+
             addTask(new PoisonPill());
         }
     }

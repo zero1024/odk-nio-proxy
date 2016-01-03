@@ -9,6 +9,8 @@ import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: operehod
@@ -16,6 +18,9 @@ import java.nio.channels.SocketChannel;
  * Time: 11:53
  */
 public class AcceptEventHandler implements EventHandler {
+
+
+    private static final Logger logger = Logger.getLogger(AcceptEventHandler.class.getName());
 
     private ProxyConfig config;
 
@@ -27,6 +32,7 @@ public class AcceptEventHandler implements EventHandler {
     public void handle(SelectionKey key) {
         if (key.isValid() && key.isAcceptable()) {
             try {
+
                 ServerSocketChannel server = (ServerSocketChannel) key.channel();
                 SocketChannel localChannel = server.accept();
                 localChannel.configureBlocking(false);
@@ -34,9 +40,13 @@ public class AcceptEventHandler implements EventHandler {
                 SocketChannel remoteChannel = SocketChannel.open();
                 remoteChannel.configureBlocking(false);
                 remoteChannel.connect(new InetSocketAddress(config.getRemoteHost(), config.getRemotePort()));
+
                 WorkBoard.addTask(new TransferTask(localChannel, remoteChannel, config));
             } catch (IOException e) {
-                e.printStackTrace();
+                if (logger.isLoggable(Level.WARNING)) {
+                    logger.log(Level.WARNING, "Transfer has failed. Local port : [" + config.getLocalPort() +
+                            "]. Remote address: [" + config.getRemoteHost() + ":" + config.getRemotePort() + "]", e);
+                }
             }
         }
     }

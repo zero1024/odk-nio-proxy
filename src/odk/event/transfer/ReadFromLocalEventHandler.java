@@ -6,6 +6,8 @@ import odk.task.TransferTask;
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: operehod
@@ -14,8 +16,9 @@ import java.nio.channels.SocketChannel;
  */
 public class ReadFromLocalEventHandler implements EventHandler {
 
-    private TransferTask.State state;
+    private static final Logger logger = Logger.getLogger(ReadFromLocalEventHandler.class.getName());
 
+    private TransferTask.State state;
 
     public ReadFromLocalEventHandler(TransferTask.State state) {
         this.state = state;
@@ -27,14 +30,17 @@ public class ReadFromLocalEventHandler implements EventHandler {
             int read = ((SocketChannel) key.channel()).read(state.getBuffer());
             if (read > 0) {
                 state.sealBuffer();
-                state.registerLocalEvent(0);
+                state.clearLocalEvents();
                 if (state.isRemoteSocketConnected())
                     state.registerRemoteEvent(SelectionKey.OP_WRITE, new WriteEventHandler(state));
             } else if (read == -1) {
                 state.closeTransfer();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            if (logger.isLoggable(Level.WARNING)) {
+                logger.log(Level.WARNING, "Reading has failed", e);
+            }
+            state.closeTransfer();
         }
 
 

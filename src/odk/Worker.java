@@ -23,7 +23,6 @@ public class Worker implements Runnable {
 
     private Selector selector;
 
-
     public Selector getSelector() {
         return selector;
     }
@@ -35,8 +34,14 @@ public class Worker implements Runnable {
     @Override
     public void run() {
         try (Selector selector = Selector.open()) {
+
+            if (logger.isLoggable(Level.INFO)) {
+                logger.log(Level.INFO, "Worker started in thread: [{0}]", currentThread().getId());
+            }
+
             this.selector = selector;
             cycleWork();
+
         } catch (IOException e) {
             if (logger.isLoggable(Level.SEVERE)) {
                 logger.log(Level.SEVERE, "Some problem with selector. Thread is stopped", e);
@@ -68,6 +73,12 @@ public class Worker implements Runnable {
             }
             keys.clear();
         }
+
+        if (logger.isLoggable(Level.WARNING)) {
+            logger.log(Level.WARNING, "Worker in thread stopped: [{0}]", currentThread().getId());
+        }
+
+
     }
 
 }

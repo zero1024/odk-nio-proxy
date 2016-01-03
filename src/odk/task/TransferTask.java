@@ -48,8 +48,8 @@ public class TransferTask implements Task {
             remoteChannel.register(selector, SelectionKey.OP_CONNECT, new ConnectEventHandler(state));
             localChannel.register(selector, SelectionKey.OP_READ, new ReadFromLocalEventHandler(state));
         } catch (IOException e) {
-            if (logger.isLoggable(Level.SEVERE)) {
-                logger.log(Level.SEVERE, "Transfer is failed. Local port : [" + config.getLocalPort() +
+            if (logger.isLoggable(Level.WARNING)) {
+                logger.log(Level.WARNING, "Transfer has failed. Local port : [" + config.getLocalPort() +
                         "]. Remote address: [" + config.getRemoteHost() + ":" + config.getRemotePort() + "]", e);
             }
         }
@@ -60,12 +60,12 @@ public class TransferTask implements Task {
      * User: operehod
      * Date: 02.01.2016
      * Time: 12:19
-     *
+     * <p>
      * Класс, инкапсулирующий в себе состояние выполнения TransferTask.
-     *
      */
     public static class State {
 
+        private static final Logger logger = Logger.getLogger(State.class.getName());
 
         private boolean remoteSocketConnected = false;
         private ByteBuffer buffer = ByteBuffer.allocate(1024);
@@ -106,10 +106,6 @@ public class TransferTask implements Task {
         }
 
 
-        public void registerLocalEvent(int event) throws ClosedChannelException {
-            localChannel.register(selector, event);
-        }
-
         public void registerLocalEvent(int event, EventHandler handler) throws ClosedChannelException {
             localChannel.register(selector, event, handler);
         }
@@ -119,14 +115,30 @@ public class TransferTask implements Task {
             remoteChannel.register(selector, event, handler);
         }
 
-        public void registerRemoteEvent(int event) throws ClosedChannelException {
-            remoteChannel.register(selector, event);
+        public void clearRemoteEvents() throws ClosedChannelException {
+            remoteChannel.register(selector, 0);
+        }
+
+        public void clearLocalEvents() throws ClosedChannelException {
+            localChannel.register(selector, 0);
         }
 
 
-        public void closeTransfer() throws IOException {
-            remoteChannel.close();
-            localChannel.close();
+        public void closeTransfer() {
+            try {
+                remoteChannel.close();
+            } catch (IOException e) {
+                if (logger.isLoggable(Level.WARNING)) {
+                    logger.log(Level.WARNING, "Can't close remote channel", e);
+                }
+            }
+            try {
+                localChannel.close();
+            } catch (IOException e) {
+                if (logger.isLoggable(Level.WARNING)) {
+                    logger.log(Level.WARNING, "Can't close local channel", e);
+                }
+            }
         }
 
         public void finishConnect() throws IOException {

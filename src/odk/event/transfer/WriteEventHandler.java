@@ -6,6 +6,8 @@ import odk.task.TransferTask;
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: operehod
@@ -14,8 +16,9 @@ import java.nio.channels.SocketChannel;
  */
 public class WriteEventHandler implements EventHandler {
 
-    private TransferTask.State state;
+    private static final Logger logger = Logger.getLogger(WriteEventHandler.class.getName());
 
+    private TransferTask.State state;
 
     public WriteEventHandler(TransferTask.State state) {
         this.state = state;
@@ -35,7 +38,10 @@ public class WriteEventHandler implements EventHandler {
                 state.closeTransfer();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            if (logger.isLoggable(Level.WARNING)) {
+                logger.log(Level.WARNING, "Writing has failed", e);
+            }
+            state.closeTransfer();
         }
 
 
