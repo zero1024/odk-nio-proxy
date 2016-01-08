@@ -27,6 +27,19 @@ public class ProxyConfigParser {
     }
 
 
+    private static int parseInt(String propertyName, String propertyValue) {
+        try {
+            return Integer.parseInt(propertyValue);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(format("Property [%s] must be integer!", propertyName));
+        }
+
+    }
+
+
+    /**
+     * Билдер ProxyConfig. При вызове метода build() происходит валидация что все свойства установлены.
+     */
     private static class ProxyConfigBuilder {
         private String name;
         private int localPort = -1;
@@ -66,6 +79,10 @@ public class ProxyConfigParser {
 
     }
 
+    /**
+     * Билдер списка ProxyConfig. Билдеру передаются свойства через addProperty() метод, которые он анализурует и сохраняет
+     * во внутренную структура данных. При вызове метода build() возвращается список ProxyConfig созданных на базе переданных свойств.
+     */
     private static class ProxyConfigsBuilderByProperties {
 
         private Map<String, ProxyConfigBuilder> map = new HashMap<>();
@@ -115,15 +132,6 @@ public class ProxyConfigParser {
                 map.put(proxyName, new ProxyConfigBuilder(proxyName));
             return map.get(proxyName);
         }
-    }
-
-    private static int parseInt(String propertyName, String propertyValue) {
-        try {
-            return Integer.parseInt(propertyValue);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(format("Property [%s] must be integer!", propertyName));
-        }
-
     }
 
 
