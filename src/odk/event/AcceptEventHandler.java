@@ -12,6 +12,8 @@ import java.nio.channels.SocketChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.lang.String.format;
+
 /**
  * User: operehod
  * Date: 29.12.2015
@@ -44,8 +46,9 @@ public class AcceptEventHandler implements EventHandler {
                 WorkBoard.addTask(new TransferTask(localChannel, remoteChannel, config));
             } catch (IOException e) {
                 if (logger.isLoggable(Level.WARNING)) {
-                    logger.log(Level.WARNING, "Transfer has failed. Local port : [" + config.getLocalPort() +
-                            "]. Remote address: [" + config.getRemoteHost() + ":" + config.getRemotePort() + "]", e);
+                    logger.log(Level.WARNING,
+                            format("Transfer has failed. Local port : [%s]. Remote address: [%s:%s]", config.getLocalPort(), config.getRemoteHost(), config.getRemotePort()),
+                            e);
                 }
             }
         }

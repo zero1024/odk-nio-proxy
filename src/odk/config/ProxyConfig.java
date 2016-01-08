@@ -8,14 +8,20 @@ package odk.config;
 public class ProxyConfig {
 
 
+    private String name;
     private int localPort;
     private int remotePort;
     private String remoteHost;
 
-    public ProxyConfig(int localPort, int remotePort, String remoteHost) {
+    public ProxyConfig(String name, int localPort, String remoteHost, int remotePort) {
+        this.name = name;
         this.localPort = localPort;
         this.remotePort = remotePort;
         this.remoteHost = remoteHost;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getLocalPort() {

@@ -43,7 +43,7 @@ public class AcceptTask implements Task {
             server.register(worker.getSelector(), SelectionKey.OP_ACCEPT, handler);
         } catch (IOException e) {
             if (logger.isLoggable(Level.SEVERE)) {
-                logger.log(Level.SEVERE, "Can't init server socket. Port [" + config.getLocalPort() + "]", e);
+                logger.log(Level.SEVERE, String.format("Can't init server socket. Port [%s]", config.getLocalPort()), e);
             }
             WorkBoard.reportAcceptTaskFail();
         }
