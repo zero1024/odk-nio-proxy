@@ -1,8 +1,12 @@
 package odk.config;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
 
 /**
  * User: operehod
@@ -25,7 +29,6 @@ public class ProxyConfigParser {
 
         return builder.build();
     }
-
 
 
     /**
@@ -80,11 +83,9 @@ public class ProxyConfigParser {
 
 
         public List<ProxyConfig> build() {
-            List<ProxyConfig> res = new ArrayList<>();
-            for (ProxyConfigBuilder builder : map.values()) {
-                res.add(builder.build());
-            }
-            return res;
+            return map.values().stream()
+                    .map(ProxyConfigBuilder::build)
+                    .collect(toList());
         }
 
         public void addProperty(String propertyName, String propertyValue) {

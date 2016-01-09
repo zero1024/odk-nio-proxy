@@ -28,8 +28,8 @@ public class Runner {
 
     public static void main(String[] args) {
 
+        //1. грузим файл с конфигурацией
         Properties properties;
-
         try (InputStream propertiesStream = getPropertiesAsStream(args)) {
             properties = new Properties();
             properties.load(propertiesStream);
@@ -41,11 +41,13 @@ public class Runner {
         }
 
 
+        //2. формируем список прокси-конфигов
         List<ProxyConfig> configList = ProxyConfigParser.parse(properties);
         if (configList.isEmpty()) {
             throw new IllegalArgumentException("Configuration file for proxy server is empty!");
         }
 
+        //3. регистрируем задачи типа accept на локальных сокетах
         List<AcceptTask> tasks = new ArrayList<>();
         for (ProxyConfig config : configList) {
 
@@ -57,6 +59,8 @@ public class Runner {
         }
         WorkBoard.init(tasks);
 
+
+        //4. запускаем потоки
         int processors = Runtime.getRuntime().availableProcessors();
 
         if (logger.isLoggable(Level.INFO)) {
