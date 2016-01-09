@@ -30,7 +30,7 @@ public class Runner {
 
         Properties properties;
 
-        try (InputStream propertiesStream = getPropertiesStream(args)) {
+        try (InputStream propertiesStream = getPropertiesAsStream(args)) {
             properties = new Properties();
             properties.load(propertiesStream);
         } catch (IOException e) {
@@ -70,7 +70,7 @@ public class Runner {
     }
 
 
-    public static InputStream getPropertiesStream(String[] args) throws IOException {
+    public static InputStream getPropertiesAsStream(String[] args) throws IOException {
         if (args.length > 0) {
 
             if (logger.isLoggable(Level.INFO)) {
