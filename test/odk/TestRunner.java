@@ -13,6 +13,7 @@ public class TestRunner {
     public static void main(String[] args) {
         ProxyConfigParserTest.testParseOneConfig();
         ProxyConfigParserTest.testParseTwoConfigs();
+        WorkBoardTest.testAcceptTasks();
     }
 
 
